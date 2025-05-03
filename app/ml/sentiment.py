@@ -9,13 +9,17 @@ logger = logging.getLogger(__name__)
 POSITIVE_WORDS = [
     'good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic',
     'terrific', 'outstanding', 'superb', 'brilliant', 'awesome', 'love',
-    'happy', 'joy', 'pleased', 'delighted', 'satisfied', 'impressive'
+    'happy', 'joy', 'pleased', 'delighted', 'satisfied', 'impressive',
 ]
 
 NEGATIVE_WORDS = [
     'bad', 'terrible', 'awful', 'horrible', 'poor', 'disappointing',
     'hate', 'dislike', 'angry', 'sad', 'upset', 'annoying', 'frustrating',
-    'mediocre', 'inferior', 'worst', 'failure', 'problem', 'issue'
+    'mediocre', 'inferior', 'worst', 'failure', 'problem', 'issue','badly',
+    'unpleasant', 'dissatisfied', 'unhappy', 'displeased', 'irritating',
+    'unacceptable', 'unfortunate', 'regrettable', 'distressing', 'troublesome',
+    'unfavorable', 'unreliable', 'inadequate', 'subpar', 'inferior',
+    'untrustworthy', 'unpleasant', 'unwelcome', 'unwanted', 'undesirable','bad'
 ]
 
 def analyze_sentiment(text: str) -> str:

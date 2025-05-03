@@ -3,7 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Create SQLite database URL
-SQLALCHEMY_DATABASE_URL = "sqlite:///./notes.db"
+# Store in data directory to ensure persistence with Docker volume
+SQLALCHEMY_DATABASE_URL = "sqlite:///./data/notes.db"
 
 # Create engine
 engine = create_engine(
@@ -12,6 +13,7 @@ engine = create_engine(
 
 # Create SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 # Create Base class
 Base = declarative_base()

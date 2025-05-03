@@ -11,6 +11,7 @@ body {
 .note-card {
   margin-bottom: 20px;
   transition: transform 0.3s;
+    border-radius: 8px;
 }
 
 .note-card:hover {

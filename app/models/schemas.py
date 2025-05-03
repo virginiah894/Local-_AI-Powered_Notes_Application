@@ -14,13 +14,14 @@ class NoteResponse(NoteBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
     sentiment: Optional[str] = None
+     
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class SentimentResponse(BaseModel):
     id: int
     sentiment: str
     
     class Config:
-        orm_mode = True
+        from_attributes = True

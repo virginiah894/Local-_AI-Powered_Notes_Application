@@ -5,12 +5,10 @@ from typing import List
 from app.database.database import get_db
 from app.database import crud
 from app.models.schemas import NoteCreate, NoteResponse, SentimentResponse
-from app.api.auth import get_api_key
 
 router = APIRouter(
     prefix="/notes",
-    tags=["notes"],
-    dependencies=[Depends(get_api_key)]
+    tags=["notes"]
 )
 
 @router.post("/", response_model=NoteResponse, status_code=status.HTTP_201_CREATED)
