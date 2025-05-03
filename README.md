@@ -11,10 +11,12 @@ A local full-stack application that integrates machine learning (NLP) for sentim
 - API security with API key authentication
 - Input validation
 - Error handling
+- React frontend for user interaction
 
 ## Technology Stack
 
 - **Backend**: Python with FastAPI
+- **Frontend**: React with Bootstrap
 - **Database**: SQLite
 - **ML**: TextBlob for sentiment analysis
 - **Authentication**: API Key
@@ -52,8 +54,9 @@ A local full-stack application that integrates machine learning (NLP) for sentim
 
 - Python 3.9+
 - pip
+- Node.js and npm (for frontend)
 
-### Local Setup
+### Backend Setup
 
 1. Clone the repository:
    ```
@@ -67,18 +70,37 @@ A local full-stack application that integrates machine learning (NLP) for sentim
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. Install dependencies:
+3. Install backend dependencies:
    ```
    pip install -r requirements.txt
    ```
 
-4. Run the application:
+4. Run the backend:
    ```
    python run.py
    ```
 
 5. Access the API at http://localhost:8000
    - API documentation is available at http://localhost:8000/docs
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+
+2. Install frontend dependencies:
+   ```
+   npm install
+   ```
+
+3. Run the frontend development server:
+   ```
+   npm start
+   ```
+
+4. Access the frontend at http://localhost:3000
 
 ### Docker Setup
 
@@ -120,8 +142,8 @@ pytest tests/
 
 ## Future Improvements
 
-- Add a frontend using React or Angular
 - Implement JWT authentication
 - Add user management
 - Implement CI/CD with GitHub Actions
-- Use Docker Compose to run the app and database together
+- Add more advanced NLP features
+- Implement note categories and tags

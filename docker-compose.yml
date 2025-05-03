@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  app:
+  backend:
     build: .
     ports:
       - "8000:8000"
@@ -10,6 +10,19 @@ services:
     environment:
       - PYTHONPATH=/app
     restart: unless-stopped
+    networks:
+      - notes-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
     networks:
       - notes-network
 
