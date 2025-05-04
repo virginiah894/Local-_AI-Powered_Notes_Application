@@ -47,10 +47,27 @@ const Register = ({ onRegisterSuccess }) => {
           credentials: 'same-origin'
         });
         
+        // Even if the response is not OK (e.g., 400 error), we'll try to handle it gracefully
+        // This is especially useful for cases where the user already exists
         if (!response.ok) {
           try {
             const errorData = await response.json();
-            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+            
+            // If the error is about the user already existing, we'll redirect to login
+            if (response.status === 400 &&
+                (errorData.detail?.includes('already exists') ||
+                 errorData.detail?.includes('already registered'))) {
+              console.log('User already exists, redirecting to login');
+              alert('This username or email is already registered. Redirecting to login page.');
+              
+              // Call the onRegisterSuccess callback to switch to login tab
+              if (onRegisterSuccess) {
+                onRegisterSuccess(username);
+              }
+              return;
+            } else {
+              throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+            }
           } catch (jsonError) {
             // If the response is not valid JSON
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -96,8 +113,8 @@ const Register = ({ onRegisterSuccess }) => {
   };
 
   return (
-    <Card className="mb-4">
-      <Card.Header as="h5">Register</Card.Header>
+    <Card className="note-form shadow-sm mb-4">
+      <Card.Header as="h5" className="text-center bg-primary text-white">Register</Card.Header>
       <Card.Body>
         {error && <Alert variant="danger">{error}</Alert>}
         
@@ -111,6 +128,7 @@ const Register = ({ onRegisterSuccess }) => {
               onChange={(e) => setUsername(e.target.value)}
               required
               minLength={3}
+              className="border-primary-subtle"
             />
             <Form.Text className="text-muted">
               Username must be at least 3 characters long.
@@ -125,6 +143,7 @@ const Register = ({ onRegisterSuccess }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="border-primary-subtle"
             />
           </Form.Group>
 
@@ -137,6 +156,7 @@ const Register = ({ onRegisterSuccess }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
+              className="border-primary-subtle"
             />
             <Form.Text className="text-muted">
               Password must be at least 8 characters long.
@@ -151,16 +171,20 @@ const Register = ({ onRegisterSuccess }) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className="border-primary-subtle"
             />
           </Form.Group>
 
-          <Button 
-            variant="primary" 
-            type="submit" 
-            disabled={loading}
-          >
-            {loading ? 'Registering...' : 'Register'}
-          </Button>
+          <div className="d-grid">
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={loading}
+              className="mt-2"
+            >
+              {loading ? 'Registering...' : 'Register'}
+            </Button>
+          </div>
         </Form>
       </Card.Body>
     </Card>

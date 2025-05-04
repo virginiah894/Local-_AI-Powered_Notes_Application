@@ -3,13 +3,23 @@ import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 
 const Login = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState('');
+  // Check if there's a username from a recent registration
+  const lastUsername = localStorage.getItem('lastRegisteredUsername');
+  
+  const [username, setUsername] = useState(lastUsername || '');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
   // Get authentication context
   const { handleLoginSuccess: authLoginSuccess } = useAuth();
+  
+  // Clear the lastRegisteredUsername from localStorage after using it
+  React.useEffect(() => {
+    if (lastUsername) {
+      localStorage.removeItem('lastRegisteredUsername');
+    }
+  }, [lastUsername]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,39 +36,11 @@ const Login = ({ onLoginSuccess }) => {
       console.log('Attempting to login with username:', username);
       
       try {
-        // Use direct URL to the backend
-        const response = await fetch('http://localhost:8001/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-          mode: 'cors', // Explicitly set CORS mode
-          credentials: 'same-origin'
-        });
+        // Use the loginUser function from api.js
+        const { loginUser } = await import('../services/api');
+        await loginUser({ username, password });
         
-        if (!response.ok) {
-          try {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
-          } catch (jsonError) {
-            // If the response is not valid JSON
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-        }
-        
-        let result;
-        try {
-          result = await response.json();
-        } catch (jsonError) {
-          console.error('Error parsing JSON response:', jsonError);
-          throw new Error('Invalid response format from server');
-        }
         console.log('Login successful, received token');
-        
-        // Store the token in localStorage
-        localStorage.setItem('token', result.access_token);
         
         // Update auth context with user data
         await authLoginSuccess();
@@ -77,6 +59,8 @@ const Login = ({ onLoginSuccess }) => {
         } else if (apiError.message.includes('Failed to fetch')) {
           setError('Network error. Please check if the server is running and CORS is configured correctly.');
           console.error('This is likely a CORS issue. Check the browser console for more details.');
+        } else if (apiError.message.includes('401') || apiError.message.includes('Unauthorized')) {
+          setError('Invalid username or password. Please try again.');
         } else {
           setError(apiError.message || 'Failed to login. Please check your credentials.');
         }
@@ -90,8 +74,8 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   return (
-    <Card className="mb-4">
-      <Card.Header as="h5">Login</Card.Header>
+    <Card className="note-form shadow-sm mb-4">
+      <Card.Header as="h5" className="text-center bg-primary text-white">Login</Card.Header>
       <Card.Body>
         {error && <Alert variant="danger">{error}</Alert>}
         
@@ -104,6 +88,7 @@ const Login = ({ onLoginSuccess }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="border-primary-subtle"
             />
           </Form.Group>
 
@@ -115,16 +100,20 @@ const Login = ({ onLoginSuccess }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="border-primary-subtle"
             />
           </Form.Group>
 
-          <Button 
-            variant="primary" 
-            type="submit" 
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </Button>
+          <div className="d-grid">
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={loading}
+              className="mt-2"
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </Button>
+          </div>
         </Form>
       </Card.Body>
     </Card>

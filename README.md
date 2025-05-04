@@ -19,7 +19,7 @@ A local full-stack application that integrates machine learning (NLP) for sentim
 - **Frontend**: React with Bootstrap
 - **Database**: SQLite
 - **ML**: TextBlob for sentiment analysis (polarity-based classification)
-- **Authentication**: API Key
+- **Authentication**: JWT (JSON Web Tokens)
 - **Containerization**: Docker
 
 ## Project Structure
@@ -140,9 +140,14 @@ Run the tests with:
 pytest tests/
 ```
 
-## Future Improvements
+## Security Features
 
-- Implement JWT authentication
+- JWT (JSON Web Token) authentication
+- Password hashing with bcrypt
+- Protected API endpoints
+- Secure token handling in frontend
+
+## Future Improvements
 - Add user management
 - Implement CI/CD with GitHub Actions
 - Add more advanced NLP features

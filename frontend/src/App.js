@@ -111,10 +111,16 @@ function AppContent() {
         </Tab>
         <Tab eventKey="register" title="Register">
           <Register
-            onRegisterSuccess={() => {
+            onRegisterSuccess={(username) => {
               console.log('App: Registration successful, switching to login tab');
               // Force a delay to ensure the tab switch happens after the alert
               setTimeout(() => {
+                // Set the username in the login form if provided
+                if (username) {
+                  // We need to find a way to pass the username to the Login component
+                  // For now, we'll use localStorage as a temporary solution
+                  localStorage.setItem('lastRegisteredUsername', username);
+                }
                 setActiveTab('login');
               }, 500);
             }}
@@ -127,32 +133,32 @@ function AppContent() {
   // Render notes content if authenticated
   const renderNotesContent = () => {
     return (
-      <div className="main-content">
-        <Container>
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2>Welcome, {currentUser?.username}</h2>
-            <Button variant="outline-danger" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <Row>
-            <Col lg={3} md={2} sm={1}></Col>
-            <Col lg={6} md={8} sm={10}>
-              <NoteForm onAddNote={handleAddNote} />
-            </Col>
-            <Col lg={3} md={2} sm={1}></Col>
-          </Row>
-          <Row>
-            <Col>
-              <NotesList
-                notes={notes}
-                loading={loading}
-                onAnalyze={handleAnalyzeNote}
-              />
-            </Col>
-          </Row>
-        </Container>
+      <div className="main-content" style={{ color: 'white' }}>
+      <Container>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome, {currentUser?.username}</h2>
+        <Button variant="outline-danger" onClick={handleLogout}>
+          Logout
+        </Button>
+        </div>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <Row>
+        <Col lg={3} md={2} sm={1}></Col>
+        <Col lg={6} md={8} sm={10}>
+          <NoteForm onAddNote={handleAddNote} />
+        </Col>
+        <Col lg={3} md={2} sm={1}></Col>
+        </Row>
+        <Row>
+        <Col>
+          <NotesList
+          notes={notes}
+          loading={loading}
+          onAnalyze={handleAnalyzeNote}
+          />
+        </Col>
+        </Row>
+      </Container>
       </div>
     );
   };

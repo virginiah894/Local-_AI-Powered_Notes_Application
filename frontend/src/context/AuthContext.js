@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
             credentials: 'same-origin'
           });
           
+          // Throw an error if the response is not ok
           if (!response.ok) {
             try {
               const errorData = await response.json();

@@ -209,13 +209,42 @@ export const registerUser = async (userData) => {
 export const loginUser = async (credentials) => {
   try {
     console.log('API: Logging in user:', credentials.username);
-    const response = await api.post('/users/login', credentials);
+    
+    // Use the token endpoint instead of login endpoint
+    // The backend is configured to use tokenUrl="token" in the OAuth2PasswordBearer
+    const response = await fetch(`${API_URL}/users/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      // Use form-urlencoded format as required by OAuth2 password flow
+      body: new URLSearchParams({
+        'username': credentials.username,
+        'password': credentials.password
+      }),
+      mode: 'cors',
+      credentials: 'same-origin'
+    });
+    
+    if (!response.ok) {
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      } catch (jsonError) {
+        // If the response is not valid JSON
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    }
+    
+    const data = await response.json();
     console.log('API: Login successful, received token');
+    
     // Store the token in localStorage
-    localStorage.setItem('token', response.data.access_token);
-    return response.data;
+    localStorage.setItem('token', data.access_token);
+    return data;
   } catch (error) {
-    console.error('API: Error logging in:', error.response?.data || error.message);
+    console.error('API: Error logging in:', error.message);
     throw error;
   }
 };
