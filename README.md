@@ -18,7 +18,7 @@ A local full-stack application that integrates machine learning (NLP) for sentim
 - **Backend**: Python with FastAPI
 - **Frontend**: React with Bootstrap
 - **Database**: SQLite
-- **ML**: TextBlob for sentiment analysis
+- **ML**: TextBlob for sentiment analysis (polarity-based classification)
 - **Authentication**: API Key
 - **Containerization**: Docker
 
