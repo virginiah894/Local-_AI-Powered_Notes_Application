@@ -140,6 +140,24 @@ Run the tests with:
 pytest tests/
 ```
 
+For frontend tests:
+
+```
+cd frontend
+npm test
+```
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and deployment. The workflow:
+
+1. Runs on every push to main, master, and develop branches
+2. Runs on pull requests to these branches
+3. Executes backend tests using pytest
+4. Executes frontend tests using React Testing Library
+
+The CI/CD configuration can be found in `.github/workflows/ci.yml`.
+
 ## Security Features
 
 - JWT (JSON Web Token) authentication
@@ -149,6 +167,5 @@ pytest tests/
 
 ## Future Improvements
 - Add user management
-- Implement CI/CD with GitHub Actions
 - Add more advanced NLP features
 - Implement note categories and tags
