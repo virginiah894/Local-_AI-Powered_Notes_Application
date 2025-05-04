@@ -5,21 +5,31 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #1a0066 0%, #4b0082 50%, #800080 100%);
+  color: white;
+}
+
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a0066 0%, #4b0082 50%, #800080 100%);
 }
 
 .note-card {
   margin-bottom: 20px;
   transition: transform 0.3s;
-    border-radius: 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
 .note-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .sentiment-badge {
   margin-left: 10px;
+  font-weight: 500;
 }
 
 .sentiment-positive {
@@ -36,6 +46,11 @@ body {
 
 .note-form {
   margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
 .notes-container {
@@ -43,8 +58,67 @@ body {
 }
 
 .app-header {
-  margin-bottom: 30px;
+  margin-bottom: 0;
   padding: 20px 0;
-  background-color: #343a40;
+  background-color: rgba(0, 0, 0, 0.2);
   color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.jumbotron {
+  background: linear-gradient(135deg, rgba(26, 0, 102, 0.7) 0%, rgba(75, 0, 130, 0.7) 50%, rgba(128, 0, 128, 0.7) 100%);
+  color: white;
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  border-radius: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.jumbotron h1 {
+  font-weight: 300;
+  font-size: 2.5rem;
+}
+
+.jumbotron p {
+  font-weight: 300;
+  margin-bottom: 0;
+}
+
+.main-content {
+  padding: 2rem 0;
+}
+
+.note-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.note-form {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.note-form .card-header {
+  background-color: #4b0082;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #4b0082;
+  border-color: #4b0082;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: #6a0dad;
+  border-color: #6a0dad;
+}
+
+.btn-outline-primary {
+  color: #4b0082;
+  border-color: #4b0082;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+  background-color: #4b0082;
+  border-color: #4b0082;
 }

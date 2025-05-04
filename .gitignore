@@ -23,6 +23,10 @@ var/
 # Virtual Environment
 venv/
 ENV/
+.env
+.env.*
+*.env
+.envrc
 
 # Database
 *.db

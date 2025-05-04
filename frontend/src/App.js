@@ -35,7 +35,7 @@ function App() {
     try {
       setLoading(true);
       const newNote = await createNote(note);
-      setNotes([...notes, newNote]);
+      setNotes([newNote, ...notes]);
       return true;
     } catch (err) {
       setError('Failed to add note. Please try again.');
@@ -70,19 +70,27 @@ function App() {
   return (
     <div className="app">
       <Header />
-      <Container>
-        <Row>
-          <Col>
-            <NoteForm onAddNote={handleAddNote} />
-            {error && <div className="alert alert-danger">{error}</div>}
-            <NotesList 
-              notes={notes} 
-              loading={loading} 
-              onAnalyze={handleAnalyzeNote} 
-            />
-          </Col>
-        </Row>
-      </Container>
+      <div className="main-content">
+        <Container>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <Row>
+            <Col lg={3} md={2} sm={1}></Col>
+            <Col lg={6} md={8} sm={10}>
+              <NoteForm onAddNote={handleAddNote} />
+            </Col>
+            <Col lg={3} md={2} sm={1}></Col>
+          </Row>
+          <Row>
+            <Col>
+              <NotesList
+                notes={notes}
+                loading={loading}
+                onAnalyze={handleAnalyzeNote}
+              />
+            </Col>
+          </Row>
+        </Container>
+      </div>
     </div>
   );
 }

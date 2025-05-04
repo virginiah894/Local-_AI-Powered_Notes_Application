@@ -1,14 +1,18 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.models.note import Note
+from sqlalchemy import desc 
+from app.models.note import Note 
 from app.models.schemas import NoteCreate
 from app.ml.sentiment import analyze_sentiment
+import logging
 
 def get_notes(db: Session, skip: int = 0, limit: int = 100):
     """
-    Get all notes with pagination.
+    Get all notes with pagination, ordered by creation date (most recent first).
     """
-    return db.query(Note).offset(skip).limit(limit).all()
+    # Order by Note.created_at in descending order
+   
+    return db.query(Note).order_by(desc(Note.created_at)).offset(skip).limit(limit).all()
 
 def get_note(db: Session, note_id: int):
     """
@@ -60,7 +64,6 @@ def analyze_note_sentiment(db: Session, note_id: int):
     Raises:
         HTTPException: If there's an error during sentiment analysis or database operations
     """
-    import logging
     logger = logging.getLogger(__name__)
     
     try:
@@ -69,7 +72,8 @@ def analyze_note_sentiment(db: Session, note_id: int):
         
         if db_note is None:
             logger.warning(f"Note with ID {note_id} not found")
-            return None
+            # Raise 404 if note not found for analysis endpoint
+            raise HTTPException(status_code=404, detail=f"Note with ID {note_id} not found")
         
         logger.info(f"Analyzing sentiment for note ID {note_id}")
         
@@ -84,9 +88,13 @@ def analyze_note_sentiment(db: Session, note_id: int):
         
         return db_note
         
+    except HTTPException as http_exc:
+        # Re-raise HTTPExceptions directly
+        raise http_exc
     except Exception as e:
         db.rollback()
         logger.error(f"Error analyzing sentiment for note ID {note_id}: {str(e)}")
+        # Raise a generic 500 error for other exceptions
         raise HTTPException(
             status_code=500,
             detail=f"Error analyzing sentiment: {str(e)}"

@@ -36,8 +36,8 @@ const NoteForm = ({ onAddNote }) => {
   };
 
   return (
-    <Card className="note-form">
-      <Card.Header as="h5">Add a New Note</Card.Header>
+    <Card className="note-form shadow-sm">
+      <Card.Header as="h5" className="text-center bg-primary text-white">Add a New Note</Card.Header>
       <Card.Body>
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="noteTitle">
@@ -49,6 +49,7 @@ const NoteForm = ({ onAddNote }) => {
               onChange={(e) => setTitle(e.target.value)}
               required
               minLength={1}
+              className="border-primary-subtle"
             />
             <Form.Control.Feedback type="invalid">
               Please provide a title.
@@ -65,19 +66,23 @@ const NoteForm = ({ onAddNote }) => {
               onChange={(e) => setContent(e.target.value)}
               required
               minLength={10}
+              className="border-primary-subtle"
             />
             <Form.Control.Feedback type="invalid">
               Content must be at least 10 characters long.
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Button 
-            variant="primary" 
-            type="submit" 
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Adding...' : 'Add Note'}
-          </Button>
+          <div className="d-grid">
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={isSubmitting}
+              className="mt-2"
+            >
+              {isSubmitting ? 'Adding...' : 'Add Note'}
+            </Button>
+          </div>
         </Form>
       </Card.Body>
     </Card>
