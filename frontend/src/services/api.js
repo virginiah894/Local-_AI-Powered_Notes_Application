@@ -58,10 +58,22 @@ export const fetchNotes = async () => {
     });
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      } catch (jsonError) {
+        // If the response is not valid JSON
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     }
     
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.error('Error parsing JSON response:', jsonError);
+      throw new Error('Invalid response format from server');
+    }
     console.log('API: Notes fetched successfully:', data);
     return data;
   } catch (error) {
@@ -92,10 +104,22 @@ export const createNote = async (note) => {
     });
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      } catch (jsonError) {
+        // If the response is not valid JSON
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     }
     
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.error('Error parsing JSON response:', jsonError);
+      throw new Error('Invalid response format from server');
+    }
     console.log('API: Note created successfully:', data);
     return data;
   } catch (error) {
@@ -124,10 +148,22 @@ export const analyzeNote = async (noteId) => {
     });
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      } catch (jsonError) {
+        // If the response is not valid JSON
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     }
     
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.error('Error parsing JSON response:', jsonError);
+      throw new Error('Invalid response format from server');
+    }
     console.log('API: Note sentiment analyzed successfully:', data);
     return data;
   } catch (error) {

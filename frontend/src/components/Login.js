@@ -39,11 +39,22 @@ const Login = ({ onLoginSuccess }) => {
         });
         
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+          try {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+          } catch (jsonError) {
+            // If the response is not valid JSON
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
         }
         
-        const result = await response.json();
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          console.error('Error parsing JSON response:', jsonError);
+          throw new Error('Invalid response format from server');
+        }
         console.log('Login successful, received token');
         
         // Store the token in localStorage
