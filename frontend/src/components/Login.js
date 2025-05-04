@@ -32,8 +32,11 @@ const Login = ({ onLoginSuccess }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
           body: JSON.stringify({ username, password }),
+          mode: 'cors', // Explicitly set CORS mode
+          credentials: 'same-origin'
         });
         
         if (!response.ok) {
@@ -58,7 +61,15 @@ const Login = ({ onLoginSuccess }) => {
         }
       } catch (apiError) {
         console.error('API Error details:', apiError);
-        setError(apiError.message || 'Failed to login. Please check your credentials.');
+        
+        if (apiError.message.includes('404')) {
+          setError('Login endpoint not found. Please check server configuration.');
+        } else if (apiError.message.includes('Failed to fetch')) {
+          setError('Network error. Please check if the server is running and CORS is configured correctly.');
+          console.error('This is likely a CORS issue. Check the browser console for more details.');
+        } else {
+          setError(apiError.message || 'Failed to login. Please check your credentials.');
+        }
       }
     } catch (err) {
       setError('Failed to log in. Please check your credentials.');

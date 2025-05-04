@@ -26,8 +26,11 @@ export const AuthProvider = ({ children }) => {
           // Use direct fetch instead of the API service
           const response = await fetch('http://localhost:8001/users/me', {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/json'
+            },
+            mode: 'cors', // Explicitly set CORS mode
+            credentials: 'same-origin'
           });
           
           if (!response.ok) {
@@ -64,8 +67,11 @@ export const AuthProvider = ({ children }) => {
       // Use direct fetch instead of the API service
       const response = await fetch('http://localhost:8001/users/me', {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        },
+        mode: 'cors', // Explicitly set CORS mode
+        credentials: 'same-origin'
       });
       
       if (!response.ok) {

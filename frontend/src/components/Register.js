@@ -41,8 +41,11 @@ const Register = ({ onRegisterSuccess }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
           body: JSON.stringify({ username, email, password }),
+          mode: 'cors', // Explicitly set CORS mode
+          credentials: 'same-origin'
         });
         
         if (!response.ok) {
@@ -67,6 +70,9 @@ const Register = ({ onRegisterSuccess }) => {
         
         if (apiError.message.includes('404')) {
           setError('Registration endpoint not found. Please check server configuration.');
+        } else if (apiError.message.includes('Failed to fetch')) {
+          setError('Network error. Please check if the server is running and CORS is configured correctly.');
+          console.error('This is likely a CORS issue. Check the browser console for more details.');
         } else {
           setError(apiError.message || 'Failed to register. Please try again.');
         }
