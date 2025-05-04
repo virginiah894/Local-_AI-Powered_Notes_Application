@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Get API URL from environment variable or use default
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+// Use relative URLs to leverage the proxy configuration
+const API_URL = '';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -47,7 +47,7 @@ export const fetchNotes = async () => {
       throw new Error('No authentication token found');
     }
     
-    const response = await fetch('http://localhost:8001/notes', {
+    const response = await fetch('/notes', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -79,7 +79,7 @@ export const createNote = async (note) => {
       throw new Error('No authentication token found');
     }
     
-    const response = await fetch('http://localhost:8001/notes', {
+    const response = await fetch('/notes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const analyzeNote = async (noteId) => {
       throw new Error('No authentication token found');
     }
     
-    const response = await fetch(`http://localhost:8001/notes/${noteId}/analyze`, {
+    const response = await fetch(`/notes/${noteId}/analyze`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

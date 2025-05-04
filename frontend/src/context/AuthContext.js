@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         console.log('AuthContext: Token found, attempting to load user data');
         try {
-          // Use direct fetch instead of the API service
-          const response = await fetch('http://localhost:8001/users/me', {
+          // Use relative URL to leverage the proxy configuration
+          const response = await fetch('/users/me', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Accept': 'application/json'
@@ -64,8 +64,8 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No token found');
       }
       
-      // Use direct fetch instead of the API service
-      const response = await fetch('http://localhost:8001/users/me', {
+      // Use relative URL to leverage the proxy configuration
+      const response = await fetch('/users/me', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
