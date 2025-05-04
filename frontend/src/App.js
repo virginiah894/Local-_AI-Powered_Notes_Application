@@ -1,19 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Button } from 'react-bootstrap';
 import NoteForm from './components/NoteForm';
 import NotesList from './components/NotesList';
 import Header from './components/Header';
-import { fetchNotes, createNote, analyzeNote } from './services/api';
+import Login from './components/Login';
+import Register from './components/Register';
+import { fetchNotes, createNote, analyzeNote, isAuthenticated } from './services/api';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-function App() {
+function AppContent() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Fetch notes on component mount
+  const [activeTab, setActiveTab] = useState('login'); // Default to login tab
+  
+  const { currentUser, handleLogout, loading: authLoading } = useAuth();
+  const authenticated = !!currentUser;
+  
+  // Set active tab based on authentication state
   useEffect(() => {
-    loadNotes();
-  }, []);
+    if (authenticated) {
+      setActiveTab('notes');
+    } else if (!authLoading) {
+      setActiveTab('login');
+    }
+  }, [authenticated, authLoading]);
+
+  // Fetch notes on component mount if authenticated
+  useEffect(() => {
+    if (authenticated) {
+      loadNotes();
+    } else {
+      setNotes([]);
+      setLoading(false);
+    }
+  }, [authenticated]);
 
   // Load notes from API
   const loadNotes = async () => {
@@ -67,11 +88,47 @@ function App() {
     }
   };
 
-  return (
-    <div className="app">
-      <Header />
+  // Handle successful login
+  const handleLoginSuccess = () => {
+    console.log('Login success handler in App.js called');
+    setActiveTab('notes');
+    loadNotes();
+  };
+
+  // Render authentication tabs if not authenticated
+  const renderAuthTabs = () => {
+    return (
+      <Tabs
+        activeKey={activeTab}
+        onSelect={(k) => setActiveTab(k)}
+        className="mb-4"
+      >
+        <Tab eventKey="login" title="Login">
+          <Login onLoginSuccess={handleLoginSuccess} />
+        </Tab>
+        <Tab eventKey="register" title="Register">
+          <Register
+            onRegisterSuccess={() => {
+              console.log('Registration successful, switching to login tab');
+              setActiveTab('login');
+            }}
+          />
+        </Tab>
+      </Tabs>
+    );
+  };
+
+  // Render notes content if authenticated
+  const renderNotesContent = () => {
+    return (
       <div className="main-content">
         <Container>
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2>Welcome, {currentUser?.username}</h2>
+            <Button variant="outline-danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
           {error && <div className="alert alert-danger">{error}</div>}
           <Row>
             <Col lg={3} md={2} sm={1}></Col>
@@ -91,7 +148,24 @@ function App() {
           </Row>
         </Container>
       </div>
+    );
+  };
+
+  return (
+    <div className="app">
+      <Header />
+      <Container>
+        {authenticated ? renderNotesContent() : renderAuthTabs()}
+      </Container>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
