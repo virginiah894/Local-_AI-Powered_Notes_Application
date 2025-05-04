@@ -35,8 +35,8 @@ const Register = ({ onRegisterSuccess }) => {
       console.log('Attempting to register user with data:', { username, email, password: '***' });
       
       try {
-        // Use relative URL to leverage the proxy configuration
-        const response = await fetch('/users/register', {
+        // Use direct URL to the backend
+        const response = await fetch('http://localhost:8001/users/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

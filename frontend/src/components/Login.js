@@ -26,8 +26,8 @@ const Login = ({ onLoginSuccess }) => {
       console.log('Attempting to login with username:', username);
       
       try {
-        // Use relative URL to leverage the proxy configuration
-        const response = await fetch('/users/login', {
+        // Use direct URL to the backend
+        const response = await fetch('http://localhost:8001/users/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
