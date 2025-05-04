@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get API URL from environment variable or use default
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -41,8 +41,29 @@ api.interceptors.response.use(
 // Fetch all notes
 export const fetchNotes = async () => {
   try {
-    const response = await api.get('/notes');
-    return response.data;
+    console.log('API: Fetching notes');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    const response = await fetch('http://localhost:8001/notes', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      mode: 'cors',
+      credentials: 'same-origin'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('API: Notes fetched successfully:', data);
+    return data;
   } catch (error) {
     console.error('Error fetching notes:', error);
     throw error;
@@ -52,8 +73,31 @@ export const fetchNotes = async () => {
 // Create a new note
 export const createNote = async (note) => {
   try {
-    const response = await api.post('/notes', note);
-    return response.data;
+    console.log('API: Creating note:', note);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    const response = await fetch('http://localhost:8001/notes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(note),
+      mode: 'cors',
+      credentials: 'same-origin'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('API: Note created successfully:', data);
+    return data;
   } catch (error) {
     console.error('Error creating note:', error);
     throw error;
@@ -63,8 +107,29 @@ export const createNote = async (note) => {
 // Analyze note sentiment
 export const analyzeNote = async (noteId) => {
   try {
-    const response = await api.get(`/notes/${noteId}/analyze`);
-    return response.data;
+    console.log('API: Analyzing note sentiment for ID:', noteId);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    const response = await fetch(`http://localhost:8001/notes/${noteId}/analyze`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      mode: 'cors',
+      credentials: 'same-origin'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('API: Note sentiment analyzed successfully:', data);
+    return data;
   } catch (error) {
     console.error('Error analyzing note:', error);
     throw error;
@@ -75,11 +140,32 @@ export const analyzeNote = async (noteId) => {
 export const registerUser = async (userData) => {
   try {
     console.log('API: Registering user with data:', { ...userData, password: '[REDACTED]' });
-    const response = await api.post('/users/register', userData);
+    console.log('API: Full request URL:', `${API_URL}/users/register`);
+    
+    // Log request headers for debugging
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    console.log('API: Request headers:', headers);
+    
+    // Make the request with explicit URL and headers for debugging
+    const response = await axios({
+      method: 'post',
+      url: `${API_URL}/users/register`,
+      headers: headers,
+      data: userData
+    });
+    
     console.log('API: Registration successful, response:', response.data);
     return response.data;
   } catch (error) {
-    console.error('API: Error registering user:', error.response?.data || error.message);
+    console.error('API: Error registering user:', error);
+    console.error('API: Error details:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      headers: error.response?.headers
+    });
     throw error;
   }
 };
