@@ -5,7 +5,7 @@ import NotesList from './components/NotesList';
 import Header from './components/Header';
 import Login from './components/Login';
 import Register from './components/Register';
-import { fetchNotes, createNote, analyzeNote, isAuthenticated } from './services/api';
+import { fetchNotes, createNote, analyzeNote } from './services/api';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function AppContent() {
@@ -19,9 +19,12 @@ function AppContent() {
   
   // Set active tab based on authentication state
   useEffect(() => {
+    console.log('App: Authentication state changed', { authenticated, authLoading });
     if (authenticated) {
+      console.log('App: User is authenticated, switching to notes tab');
       setActiveTab('notes');
     } else if (!authLoading) {
+      console.log('App: User is not authenticated, switching to login tab');
       setActiveTab('login');
     }
   }, [authenticated, authLoading]);
@@ -90,7 +93,7 @@ function AppContent() {
 
   // Handle successful login
   const handleLoginSuccess = () => {
-    console.log('Login success handler in App.js called');
+    console.log('App: Login success handler in App.js called');
     setActiveTab('notes');
     loadNotes();
   };
@@ -109,8 +112,11 @@ function AppContent() {
         <Tab eventKey="register" title="Register">
           <Register
             onRegisterSuccess={() => {
-              console.log('Registration successful, switching to login tab');
-              setActiveTab('login');
+              console.log('App: Registration successful, switching to login tab');
+              // Force a delay to ensure the tab switch happens after the alert
+              setTimeout(() => {
+                setActiveTab('login');
+              }, 500);
             }}
           />
         </Tab>

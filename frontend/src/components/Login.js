@@ -24,17 +24,41 @@ const Login = ({ onLoginSuccess }) => {
       setError('');
       setLoading(true);
       
-      // Login user and get token
-      await loginUser({ username, password });
+      console.log('Attempting to login with username:', username);
       
-      // Update auth context with user data
-      await authLoginSuccess();
-      
-      console.log('Login successful, redirecting to notes page');
-      
-      // Call the onLoginSuccess callback if provided
-      if (onLoginSuccess) {
-        onLoginSuccess();
+      try {
+        // Use direct fetch instead of the API service to debug
+        const response = await fetch('http://localhost:8001/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Login successful, received token');
+        
+        // Store the token in localStorage
+        localStorage.setItem('token', result.access_token);
+        
+        // Update auth context with user data
+        await authLoginSuccess();
+        
+        console.log('Login successful, redirecting to notes page');
+        
+        // Call the onLoginSuccess callback if provided
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      } catch (apiError) {
+        console.error('API Error details:', apiError);
+        setError(apiError.message || 'Failed to login. Please check your credentials.');
       }
     } catch (err) {
       setError('Failed to log in. Please check your credentials.');

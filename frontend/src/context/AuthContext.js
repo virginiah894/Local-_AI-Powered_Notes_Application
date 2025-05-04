@@ -19,17 +19,29 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUser = async () => {
       console.log('AuthContext: Checking if user is authenticated');
-      if (isAuthenticated()) {
+      const token = localStorage.getItem('token');
+      if (token) {
         console.log('AuthContext: Token found, attempting to load user data');
         try {
-          const userData = await getCurrentUser();
+          // Use direct fetch instead of the API service
+          const response = await fetch('http://localhost:8001/users/me', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const userData = await response.json();
           console.log('AuthContext: User data loaded successfully', userData);
           setCurrentUser(userData);
         } catch (err) {
           console.error('AuthContext: Error loading user:', err);
           setError('Failed to load user data');
           // If there's an error, clear the token
-          logoutUser();
+          localStorage.removeItem('token');
         }
       } else {
         console.log('AuthContext: No token found, user is not authenticated');
@@ -44,7 +56,23 @@ export const AuthProvider = ({ children }) => {
   const handleLoginSuccess = async () => {
     console.log('AuthContext: handleLoginSuccess called');
     try {
-      const userData = await getCurrentUser();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+      
+      // Use direct fetch instead of the API service
+      const response = await fetch('http://localhost:8001/users/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const userData = await response.json();
       console.log('AuthContext: User data after login:', userData);
       setCurrentUser(userData);
       setError(null);

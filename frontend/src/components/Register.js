@@ -33,24 +33,47 @@ const Register = ({ onRegisterSuccess }) => {
       setError('');
       setLoading(true);
       
-      const result = await registerUser({ username, email, password });
-      console.log('Registration successful:', result);
+      console.log('Attempting to register user with data:', { username, email, password: '***' });
       
-      // Show success message before redirecting
-      setError('');
-      alert('Registration successful! Please log in with your credentials.');
-      
-      // Call the onRegisterSuccess callback if provided
-      if (onRegisterSuccess) {
-        onRegisterSuccess();
+      try {
+        // Use direct fetch instead of the API service to debug
+        const response = await fetch('http://localhost:8001/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, email, password }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Registration successful:', result);
+        
+        // Show success message before redirecting
+        setError('');
+        alert('Registration successful! Please log in with your credentials.');
+        
+        // Call the onRegisterSuccess callback if provided
+        if (onRegisterSuccess) {
+          console.log('Calling onRegisterSuccess callback');
+          onRegisterSuccess();
+        }
+      } catch (apiError) {
+        console.error('API Error details:', apiError);
+        
+        if (apiError.message.includes('404')) {
+          setError('Registration endpoint not found. Please check server configuration.');
+        } else {
+          setError(apiError.message || 'Failed to register. Please try again.');
+        }
       }
     } catch (err) {
-      if (err.response && err.response.data) {
-        setError(err.response.data.detail || 'Registration failed');
-      } else {
-        setError('Failed to register. Please try again.');
-      }
-      console.error(err);
+      console.error('Unexpected error during registration:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
