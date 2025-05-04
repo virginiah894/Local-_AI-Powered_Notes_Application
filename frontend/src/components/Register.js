@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
-import { registerUser } from '../services/api';
 
 const Register = ({ onRegisterSuccess }) => {
   const [username, setUsername] = useState('');

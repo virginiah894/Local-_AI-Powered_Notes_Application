@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
-import { loginUser } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const Login = ({ onLoginSuccess }) => {
