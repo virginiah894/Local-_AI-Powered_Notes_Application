@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import sys
+import os
+
+# Ensure data directory exists
+os.makedirs("./data", exist_ok=True)
 
 from app.api import notes, users
 from app.database.database import engine, Base
